@@ -54,6 +54,21 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getFacultyByStudentId(id));
     }
 
+    @GetMapping("/number-of-all")
+    public int numberOfAllStudents() {
+        return studentService.getCountAllStudent();
+    }
+
+    @GetMapping("/avg-age")
+    public float getAvgAgeStudents() {
+        return studentService.getAvgAgeStudents();
+    }
+
+    @GetMapping("/last-five")
+    public Collection<Student> getLastFiveStudent() {
+        return studentService.getLastFiveStudents();
+    }
+
     @PutMapping
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student foundStudent = studentService.updateStudent(student);

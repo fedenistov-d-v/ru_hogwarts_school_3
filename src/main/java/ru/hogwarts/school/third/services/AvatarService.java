@@ -1,4 +1,5 @@
 package ru.hogwarts.school.third.services;
+import org.springframework.data.domain.PageRequest;
 import ru.hogwarts.school.third.model.Avatar;
 import ru.hogwarts.school.third.model.Student;
 import ru.hogwarts.school.third.repositories.AvatarRepository;
@@ -14,6 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -30,6 +33,11 @@ public class AvatarService {
     public AvatarService(AvatarRepository avatarRepository, StudentService studentService) {
         this.avatarRepository = avatarRepository;
         this.studentService = studentService;
+    }
+
+    public List<Avatar> getAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return avatarRepository.findAll(pageRequest).getContent();
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
