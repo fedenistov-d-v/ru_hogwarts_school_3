@@ -1,10 +1,13 @@
 package ru.hogwarts.school.third.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity(name = "student") //Когда name совпадает с именем класса этот парамерт не обязателен
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Student {
 
     @Id
@@ -14,8 +17,9 @@ public class Student {
     private int age;
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
+    @JsonIgnore
     private Faculty oneFaculty;
 
     public Student() {}
