@@ -1,12 +1,14 @@
 package ru.hogwarts.school.third.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity(name = "faculty")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Faculty {
 
     @Id
@@ -16,7 +18,8 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "oneFaculty")
+    @OneToMany(mappedBy = "oneFaculty", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Collection<Student> students;
 
     @JsonIgnore
