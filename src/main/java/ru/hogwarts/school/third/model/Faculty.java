@@ -18,8 +18,9 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "oneFaculty", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "oneFaculty")
+//    @OneToMany(mappedBy = "oneFaculty", fetch = FetchType.LAZY)
+//    @JsonIgnore   // Здесь ленивая загрузка не обязательна
     private Collection<Student> students;
 
     @JsonIgnore

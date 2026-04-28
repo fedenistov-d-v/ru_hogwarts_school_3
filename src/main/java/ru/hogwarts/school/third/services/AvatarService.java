@@ -1,4 +1,6 @@
 package ru.hogwarts.school.third.services;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import ru.hogwarts.school.third.model.Avatar;
 import ru.hogwarts.school.third.model.Student;
@@ -15,7 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -23,6 +24,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 @Transactional
 public class AvatarService {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     @Value("${students.avatar.dir.path}")
     private String avatarsDir;
@@ -36,11 +39,13 @@ public class AvatarService {
     }
 
     public List<Avatar> getAll(int page, int size) {
+        logger.info("Был вызван метод - показать все аватарки с пагинацией (страница={}, размер={}.", page, size);
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        logger.info("Был вызван метод загрузки аватарки студента с id={} в базу данных.", studentId);
         Student student = studentService.findById(studentId);
 
         String string = String.format("avatar_%03d.",studentId);
@@ -65,6 +70,11 @@ public class AvatarService {
         avatarRepository.save(avatar);
     }
 
+    public Avatar findAvatarByStudentId(Long studentId) {
+        logger.info("Был вызван метод поиска аватарки студента с id={} в базе данных.", studentId);
+        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
+    }
+
     private byte[] generateImagePreview(Path filePath) throws IOException {
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
@@ -80,10 +90,6 @@ public class AvatarService {
             ImageIO.write(preview,getExtension(filePath.getFileName().toString()), baos);
             return baos.toByteArray();
         }
-    }
-
-    public Avatar findAvatarByStudentId(Long studentId) {
-        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     private String getExtension(String fileName) {
