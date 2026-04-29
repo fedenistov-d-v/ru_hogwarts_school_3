@@ -8,6 +8,7 @@ import ru.hogwarts.school.third.repositories.FacultyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 @Service
 public class FacultyService {
@@ -62,5 +63,17 @@ public class FacultyService {
     public Collection<Student> getStudentsByFacultyId(long id) {
         logger.info("Был вызван метод показать всех студентов факультета с id={}.", id);
         return facultyRepository.getReferenceById(id).getStudents();
+    }
+
+    public String maxLongNameFaculty() {
+        logger.info("Был вызван метод поиска самого длинного назкания факультета");
+        long startTime = System.currentTimeMillis();
+        String name = facultyRepository.findAllNameFaculty().stream()
+                .parallel()
+                .max(Comparator.comparingInt(String::length))
+                .orElse(null);
+        long finishTime = System.currentTimeMillis()-startTime;
+        logger.info ("время работы метода maxLongNameFaculty(); - {}", finishTime);
+        return name;
     }
 }

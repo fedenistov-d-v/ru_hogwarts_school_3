@@ -51,6 +51,11 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getStudentsByFacultyId(id));
     }
 
+    @GetMapping("/max_long_name")
+    public ResponseEntity<String> getMaxLongNameFaculty() {
+        return ResponseEntity.ok().body(facultyService.maxLongNameFaculty());
+    }
+
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
         Faculty foundFaculty = facultyService.updateFaculty(faculty);
