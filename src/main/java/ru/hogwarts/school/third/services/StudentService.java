@@ -70,17 +70,36 @@ public class StudentService {
         return studentRepository.getCountStudentAll();
     }
 
-    public float getAvgAgeStudents() {
+    public double getAvgAgeStudents() {
         logger.info("Был вызван метод подсчёта среднего возраста студентов в базе данных.");
         if (studentRepository.findAll().isEmpty()) {
             logger.error("Нет ни одной записи о студенте в базе данных.");
-            return 0.0F;
+            return 0.0;
         }
         return studentRepository.getAvgAgeStudents();
+    }
+
+    public double getAvgAgeStudentsStream() {
+        logger.info("Был вызван метод подсчёта среднего возраста студентов с использованием Stream.");
+        return studentRepository.findAll().stream()
+                .parallel()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
     }
 
     public List<Student> getLastFiveStudents() {
         logger.info("Был вызван метод - последние 5 записей в базе данных о студентах.");
         return studentRepository.getLastFiveStudent();
+    }
+
+    public List<String> getNamesBeginningA() {
+        logger.info("Был вызван метод - показать имена всех студентов на 'А'.");
+        return studentRepository.findAll().stream()
+                .parallel()
+                .map(s -> s.getName().toUpperCase())
+                .filter(str -> str.charAt(0) == 'А' || str.charAt(0) == 'A')
+                .sorted()
+                .toList();
     }
 }

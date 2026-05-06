@@ -59,9 +59,20 @@ public class StudentController {
         return studentService.getCountAllStudent();
     }
 
+    @GetMapping("names-starting-a")
+    public ResponseEntity<Collection<String>> getNamesBeginningA() {
+        Collection<String> names = studentService.getNamesBeginningA();
+        return ResponseEntity.ok(names);
+    }
+
     @GetMapping("/avg-age")
-    public float getAvgAgeStudents() {
+    public double getAvgAgeStudents() {
         return studentService.getAvgAgeStudents();
+    }
+
+    @GetMapping("/avg-age-stream")
+    public double getAvgAgeStudentsStream() {
+        return studentService.getAvgAgeStudentsStream();
     }
 
     @GetMapping("/last-five")
