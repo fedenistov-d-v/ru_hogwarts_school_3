@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * Здесь ленивая загрузка не обязательна
+ */
 @Entity(name = "faculty")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Faculty {
@@ -19,8 +22,6 @@ public class Faculty {
     private String color;
 
     @OneToMany(mappedBy = "oneFaculty")
-//    @OneToMany(mappedBy = "oneFaculty", fetch = FetchType.LAZY)
-//    @JsonIgnore   // Здесь ленивая загрузка не обязательна
     private Collection<Student> students;
 
     @JsonIgnore

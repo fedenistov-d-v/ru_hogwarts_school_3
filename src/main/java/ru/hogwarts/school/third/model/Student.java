@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
-@Entity(name = "student") //Когда name совпадает с именем класса этот парамерт не обязателен
+/**
+ * Когда name совпадает с именем класса этот парамерт (name = "student") не обязателен
+ */
+@Entity(name = "student")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Student {
 

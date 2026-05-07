@@ -11,11 +11,18 @@ public class InfoService {
 
     private static final Logger logger = LoggerFactory.getLogger(InfoService.class);
 
+    /**
+     * <code>long sum</code> - Вариант с использованием Stream однопоточный.<p>
+     * <code>long sum2</code> - Вариант с многопоточным Stream.<p>
+     *      ( На моём ноутбуке однопоточный Stream работает быстрее с NUMBER = 1_000_000,
+     *      но при NUMBER = 2_000_000 паралельный стрим в полтора раза быстрее ).<p>
+     * <code>long sum3</code> - Вариант без использования Stream - работает совсем быстро :)
+     * @return любую sum - результат одинаков, разница только по времени подсчёта.
+     */
     public long getSumOfSequence() {
         final int NUMBER = 1_000_000;
         logger.info("Был вызван метод подсчёта суммы последовательности от 0 до {}", NUMBER);
 
-//      Вариант с использованием Stream однопоточный
         long startTime = System.currentTimeMillis();
         long sum = LongStream.rangeClosed(0, NUMBER)
                 .sum();
@@ -23,16 +30,12 @@ public class InfoService {
         logger.info ("время работы метода LongStream.rangeClosed(0, NUMBER).sum(); - {}", finishTime);
         startTime = System.currentTimeMillis();
 
-//      Вариант с многопоточным Stream
         long sum2 = LongStream.rangeClosed(0, NUMBER)
                 .parallel()
                 .sum();
         finishTime = System.currentTimeMillis()-startTime;
         logger.info ("время работы метода LongStream.rangeClosed(0, NUMBER).parallel().sum(); - {}", finishTime);
-        // На моём ноутбуке однопоточный Stream работает быстрее с NUMBER = 1_000_000,
-        // но при NUMBER = 2_000_000 паралельный стрим в полтора раза быстрее
 
-//      Вариант без использования Stream - работает совсем быстро :)
         startTime = System.currentTimeMillis();
         long sum3 = (long) NUMBER * (NUMBER + 1) / 2;
         finishTime = System.currentTimeMillis()-startTime;
