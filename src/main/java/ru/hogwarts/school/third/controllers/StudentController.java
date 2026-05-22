@@ -80,6 +80,18 @@ public class StudentController {
         return studentService.getLastFiveStudents();
     }
 
+    @GetMapping("/print-parallel")
+    public ResponseEntity<Void> printAllStudentStreamParallel() {
+        studentService.getSixStudentStreamParallel();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<Void> printAllStudentSynchronized() {
+        studentService.getSixStudentSynchronized();
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student foundStudent = studentService.updateStudent(student);

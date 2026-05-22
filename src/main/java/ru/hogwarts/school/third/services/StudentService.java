@@ -1,4 +1,5 @@
 package ru.hogwarts.school.third.services;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hogwarts.school.third.model.Faculty;
@@ -7,6 +8,7 @@ import ru.hogwarts.school.third.repositories.StudentRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         logger.info("Был вызван метод для создания записи студента с параметром ({})", student.toString());
-        return  studentRepository.save(student);
+        return studentRepository.save(student);
     }
 
     public Student findById(long id) {
@@ -45,7 +47,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> getAllStudent() {
+    public List<Student> getAllStudent() {
         logger.info("Был вызван метод - показать всех студентов.");
         return studentRepository.findAll();
     }
@@ -101,5 +103,82 @@ public class StudentService {
                 .filter(str -> str.charAt(0) == 'А' || str.charAt(0) == 'A')
                 .sorted()
                 .toList();
+    }
+
+    public void getSixStudentStreamParallel() {
+        List<Student> students = studentRepository.findAll();
+        List<Thread> threads = new ArrayList<>();
+
+        threads.add(getThread(students, 2,4));
+        threads.add(getThread(students, 4,6));
+
+        System.out.println(students.get(0));
+        System.out.println(students.get(1));
+        for (Thread thread : threads) {
+            thread.start();
+        }
+    }
+
+    public void getSixStudentSynchronized() {
+        List<Student> students = studentRepository.findAll();
+        List<Thread> threads = new ArrayList<>();
+
+        threads.add(getThreadSynchronized(students, 2,4));
+        threads.add(getThreadSynchronized(students, 4,6));
+
+        printName(students.get(0).toString());
+        printName(students.get(1).toString());
+        for (Thread thread : threads) {
+            thread.start();
+        }
+    }
+
+    public void getAllStudentSynchronized() {
+        final int NUMBER_THREAD = 3;
+        int start = 2;
+        List<Student> students = studentRepository.findAll();
+        List<Thread> threads = new ArrayList<>();
+        int numberStudentInThread = (students.size() - start) / NUMBER_THREAD;
+        if ((students.size() - start) % NUMBER_THREAD != 0) numberStudentInThread++;
+        int end = start + numberStudentInThread;
+
+        for (int i = 0; i < NUMBER_THREAD; i++) {
+            if (i == 2) end = students.size();
+            threads.add(getThreadSynchronized(students, start, end));
+            start = end;
+            end += numberStudentInThread;
+        }
+
+        printName(students.get(0).toString());
+        printName(students.get(1).toString());
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+    }
+
+    private Thread getThread(List<Student> students, int start, int end) {
+        return new Thread(() -> {
+            for (int i = start; i < end; i++) {
+                System.out.println(students.get(i));
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    private Thread getThreadSynchronized(List<Student> students, int start, int end) {
+        return new Thread(() -> {
+            for (int i = start; i < end; i++) {
+                printName(students.get(i).toString());
+            }
+        });
+    }
+
+    private synchronized void printName(String name) {
+        System.out.println(name);
     }
 }
